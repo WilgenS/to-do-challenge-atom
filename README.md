@@ -1,149 +1,127 @@
 # 🚀 Task Management System (Challenge Full Stack)
 
-Aplicación integral de gestión de tareas con roles de supervisión y tablero interactivo, desarrollada con **Angular 17+** y **Firebase Cloud Functions**.
+Aplicación full‑stack de gestión de tareas con tablero Kanban, roles
+(supervisor) y API segura, construida con **Angular 17+** y **Firebase Cloud
+Functions (Express)** dentro de un monorepo.
 
----
+## 🔗 Demo en vivo
 
-## 📋 Descripción del Proyecto
-Este sistema permite gestionar flujos de trabajo colaborativos. A diferencia de una lista de tareas tradicional, esta solución implementa un **Tablero Kanban** visual donde se pueden gestionar estados (Pendiente, En Curso, Completado) y asignar tareas a otros usuarios bajo un rol de supervisión. 
+- **Web**: [Abrir aplicación](https://to-do-challenge-atom.web.app)
 
-Cumple con los requerimientos técnicos de escalabilidad, seguridad y calidad de código solicitados en el challenge.
+## 🧭 Estructura del monorepo
 
----
+- **`frontend/`**: Angular (standalone components)
+- **`functions/`**: API (Clean Architecture + Express + Firestore)
+- **`firebase.json`**: configuración de Hosting + Functions (deploy unificado)
 
-## 🔗 Demo en Vivo
-[**Abrir Aplicación**](https://challenge-to-do.web.app)
+## 🏗 Arquitectura (Backend)
 
-## 🏗 Arquitectura y Diseño
+El backend está organizado siguiendo Clean Architecture / DDD:
 
-El proyecto sigue un **monorepo manual** que unifica Frontend y Backend para facilitar el despliegue con `firebase deploy`.  
+- **Domain**: modelos (`Task`, `User`) + contratos (interfaces), sin
+  dependencias externas.
+- **Application**: casos de uso (`CreateTaskUseCase`, `CheckUserUseCase`, etc.),
+  lógica de negocio pura.
+- **Infrastructure**: repositorios Firestore, rutas, controllers Express y
+  middleware.
 
-### Backend (Clean Architecture & DDD)
-Se desacopló la lógica en capas estrictas para cumplir con principios **SOLID**:
-* **Domain:** Entidades (`Task`, `User`) y Contratos (Interfaces). Sin dependencias externas.
-* **Application:** Casos de Uso (`CreateTaskUseCase`, `CheckUserUseCase`). Lógica pura de negocio.
-* **Infrastructure:** Implementación real (Firestore Repository, Express Controllers).
-* **Patrones:** Repository Pattern, Factory, Singleton (Firebase Instance).
+### Seguridad / middleware
 
-### Middleware de Seguridad
-- **CORS:** Controla orígenes permitidos y manejo de credenciales.
-- **Helmet:** Protege headers HTTP.
-- **Rate Limit:** Limita peticiones (200/min) para prevenir abusos.
-- **Express JSON / URL Encoded:** Parseo de requests con límite de 10MB.
+- **CORS**: allowlist de orígenes (ver
+  `functions/src/infrastructure/http/cors.config.ts`).
+- **Helmet**: headers de seguridad.
+- **Rate limit**: 200 req/min, ignorando preflight `OPTIONS`.
+- **Body parsing**: JSON hasta 10MB.
 
-### Frontend (Angular 17 - Component Based)
-- **Architecture:** Standalone Components (sin NgModules).
-- **State Management:** Angular Signals para reactividad granular y alto rendimiento.
-- **UI Library:** Angular Material + Bootstrap (para diseño y comportamientos móviles).
-- **Lazy Loading:** Optimización de bundle cargando módulos bajo demanda.
+## 🛠 Stack
 
----
+### Frontend
 
-## 🌟 Features Destacados
-- **Tablero Kanban:** Visualización de tareas por columnas de estado.
-- **Gestión de Roles:** Auto-asignación y asignación de tareas a terceros (rol Supervisor).
-- **Filtros Inteligentes:** Separación automática de "Mis Tareas" y "Tareas Supervisadas".
-- **Seguridad Híbrida:** Firebase Auth + validación de tokens JWT en Backend.
+- Angular 17.x
+- Angular Material + Bootstrap 5
+- Karma/Jasmine (tests)
 
----
+### Backend
 
-## 🛠 Stack Tecnológico
+- Node.js 20
+- Firebase Cloud Functions + Express
+- Firestore
+- Jest + ts-jest (tests unitarios)
 
-**Frontend**
-- Angular 17.3  
-- Angular Material + Bootstrap 5  
-- Karma + Jasmine para tests  
-
-**Backend**
-- Node.js 20 (Cloud Functions Gen 2)  
-- Express.js  
-- Firestore (NoSQL)  
-- Jest + ts-jest para pruebas unitarias  
-
----
-
-## 🚀 Instalación y Ejecución
+## 🚀 Quickstart (local)
 
 ### Prerrequisitos
-- Node.js v18+  
-- Java JDK 21+ (para emuladores Firebase)  
-- Firebase CLI (`npm install -g firebase-tools`)  
 
-### Pasos
-1. **Clonar repositorio**
-```bash
-git clone <URL_TU_REPO>
-cd challenge-fullstack
-```
-2. **Instalar dependencias**
-```bash
-npm install                   # Raíz
-cd functions && npm install   # Backend
-cd ../frontend && npm install # Frontend
-```
-3. **Ejecutar en modo desarrollo**
-```bash
-npm run dev:watch #carpeta raiz
-```
-Esto levantará:
-- Backend API: `http://localhost:5001/...`
-- Firestore Emulator: `localhost:8085`
-- Emulator UI: `http://localhost:4000`
+- Node.js **18+** (recomendado **20**)
+- Java JDK **21+** (emuladores Firebase)
+- Firebase CLI: `npm i -g firebase-tools`
 
-4. **Ejecutar Frontend**
+### Instalar dependencias
+
+```bash
+npm install
+cd functions && npm install
+cd ../frontend && npm install
+```
+
+### Levantar emuladores + backend
+
+```bash
+cd functions
+npm run serve
+```
+
+### Levantar frontend
+
 ```bash
 cd frontend
 ng serve
 ```
-Abrir navegador en `http://localhost:4200`.
 
-### Configuración de Firebase
-Este proyecto utiliza **Firebase propio**. Para probarlo con tu proyecto:
-1. Crear un proyecto en Firebase.  
-2. Reemplazar las variables de entorno en `frontend/src/environments/environment.example.ts` y  `cp src/environments/environment.example.ts src/environments/environment.ts` ya con tus credenciales configuradas.  
-3. Ejecutar los scripts locales.
+## 🌐 API (rutas)
 
----
+La function se expone como `api`, por lo que el **base URL** es:
+
+- **Producción**: `https://us-central1-<PROJECT_ID>.cloudfunctions.net/api`
+
+Rutas montadas por Express (ver `functions/src/index.ts`):
+
+- **Health**: `GET /health`
+- **Users (público)**: `GET /v1/users/public/...`
+- **Users (protegido)**: `... /v1/users/...` (requiere token)
+- **Tasks (protegido)**: `... /v1/tasks/...` (requiere token)
+
+Ejemplo (email debe ir URL‑encoded):
+
+```bash
+curl -i "https://us-central1-to-do-challenge-atom.cloudfunctions.net/api/v1/users/public/check/Wilgensanchez98%40gmail.com"
+```
+
+## 🔥 Deploy (Firebase)
+
+```bash
+firebase deploy
+# o por separado
+firebase deploy --only hosting
+firebase deploy --only functions
+```
+
+### Troubleshooting: 403 “Forbidden” (Google Frontend)
+
+Si recibes un HTML 403 tipo “Your client does not have permission…”, **no es
+CORS**: es **IAM / invoker** (la request no llega a Express).
+
+- Solución: hacer la function invokable públicamente (Cloud Functions Invoker
+  para `allUsers`) o llamar con identidad autenticada.
 
 ## 🧪 Testing
 
-#### Ejecutar tests de Backend
-- Backend: 100% Unit Testing en Casos de Uso usando Mocks de Firestore.
-- cd functions && npm test
-
-#### Ejecutar tests de Frontend
-- Frontend: Tests de componentes críticos.  
-- cd frontend && ng test
-
----
-
-## 📂 Estructura de Tests
-- Estrategia de **co-locación:** los `.spec.ts` residen junto al código que prueban.  
-- Facilita mantenimiento, visibilidad y uso de mocks locales.  
-- Jest configurado para ignorar la carpeta de compilación (`/lib`).  
-
----
-
-## ⚙️ CI/CD (GitHub Actions)
-- Instala dependencias del Frontend.  
-- Crea `environment.ts` y `environment.prod.ts` a partir de secrets.  
-- Construye Frontend en modo producción.  
-- Backend se despliega automáticamente en Firebase.
-
-```yaml
-# Ejemplo simplificado del workflow
-- name: Install Frontend
-  run: cd frontend && npm ci
-
-- name: Create Environment File
-  run: cd frontend/src/environments && echo "..." > environment.example.ts
-
-- name: Build Frontend
-  run: cd frontend && npx ng build --configuration production
+```bash
+cd functions
+npm test
 ```
 
----
-
 ## ⚠️ Limitaciones
-- Control de permisos no implementado (solo autenticación básica).  
-- Proyecto desarrollado como **challenge**; funcionalidad limitada a demostración de gestión de tareas y buenas prácticas técnicas.
+
+- El sistema prioriza el flujo principal del challenge; permisos finos (RBAC
+  completo) no están incluidos.

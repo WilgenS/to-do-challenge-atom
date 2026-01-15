@@ -1,0 +1,66 @@
+<div class="row g-3">
+  @for (col of columns; track $index) {
+  <div class="col-md-4">
+    <div class="status-column p-3 rounded-4 shadow-sm" [ngClass]="col.class">
+      <h6
+        class="text-uppercase fw-bold mb-3 opacity-75"
+        [ngClass]="col.titleClass"
+      >
+        {{ col.label }} ({{ col.items.length }})
+      </h6>
+
+      @for (task of col.items; track task.id) {
+      <mat-card
+        class="mb-3 task-card rounded-3 shadow-sm"
+        [class.clickable]="!isReadOnly"
+      >
+        <mat-card-content
+          class="px-3 py-2.5 d-flex flex-lg-row flex-column justify-content-between align-items-center gap-3"
+        >
+          <div class="flex-grow-1 min-w-0">
+            <p
+              class="fw-semibold mb-1"
+              [ngClass]="{
+                'text-decoration-line-through': task.status === 'completed'
+              }"
+            >
+              {{ task.title }}
+            </p>
+
+            <p class="">
+              {{
+                task.status === "completed"
+                  ? (task.createdAt | date : "shortDate")
+                  : task.description
+              }}
+            </p>
+          </div>
+
+          <div
+            class="d-flex align-items-center justify-content-center gap-2 flex-shrink-0"
+          >
+            @if(showButtonEdit(task)) {
+            <button
+              mat-mini-fab
+              (click)="onCardClick(task)"
+              class="shadow-sm btn-hover btn-primary-solid"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            } @if( showButtonDelete(task) ) {
+            <button
+              mat-mini-fab
+              (click)="onDeleteClick(task)"
+              class="shadow-sm btn-hover btn-warn-solid"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+      }
+    </div>
+  </div>
+  }
+</div>
