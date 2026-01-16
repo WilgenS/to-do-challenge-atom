@@ -31,7 +31,7 @@ export enum Priorities {
  }
 
  export const priorityColors: Record<Priorities, string> = {
-   [Priorities.High]: '#dc2626',
-   [Priorities.Medium]: '#ca8a04',
+   [Priorities.High]: '#ec5353',
+   [Priorities.Medium]: '#ee7917',
    [Priorities.Low]: '#16a34a',
  };

@@ -14,72 +14,49 @@
         class="mb-3 task-card rounded-3 shadow-sm"
         [class.clickable]="!isReadOnly"
       >
-        <mat-card-content
-          class="px-3 py-2.5 d-flex flex-lg-row flex-column justify-content-between align-items-center gap-3"
-        >
-          <div class="flex-grow-1 min-w-0">
-            <div
-            class="d-flex align-items-center justify-content-center gap-2 flex-shrink-0"
-            
-            >
-              @if(task.priority && task){
-                <p
-                class="fw-bold"
-                [ngStyle]="{ color: colors[task.priority] }"
-                  >
-                    {{task.priority}}
-              </p>
-            }
+      <mat-card-content class="px-3 py-2.5 d-flex flex-lg-row flex-column justify-content-between align-items-center gap-3">
+  
+        <div class="flex-grow-1 min-w-0 w-100">
+          
+          @if(task.priority) {
+            <div class="priority-container">
+              <span class="pill" [style.background-color]="colors[task.priority]">
+                {{ task.priority }}
+              </span>
             </div>
-            <p
-              class="fw-semibold mb-1"
-              [ngClass]="{
-                'text-decoration-line-through': task.status === 'completed'
-              }"
-            >
-              {{ task.title }}
-            </p>
-
-            <p>
-              {{
-                task.status === "completed"
-                  ? (task.createdAt | date : "shortDate")
-                  : task.description
-              }}
-            </p>
-
-            @if(task.supervisorId !== task.assignedToId && task.assignedUser) {
-            <p>
+          }
+      
+          <p class="fw-semibold mb-1 pe-5" [ngClass]="{'text-decoration-line-through': task.status === 'completed'}">
+            {{ task.title }}
+          </p>
+      
+          <p class="text-muted mb-1 small">
+            {{ task.status === "completed" ? (task.createdAt | date : "shortDate") : task.description }}
+          </p>
+      
+          @if(task.supervisorId !== task.assignedToId && task.assignedUser) {
+            <p class="mb-0 small text-secondary">
               <strong>Asignada a: </strong>
               {{ task.assignedUser.name }} {{ task.assignedUser.lastname }}
             </p>
-            }
-
-          </div>
-
-          <div
-            class="d-flex align-items-center justify-content-center gap-2 flex-shrink-0"
-          >
-            @if(showButtonEdit(task)) {
-            <button
-              mat-mini-fab
-              (click)="onCardClick(task)"
-              class="shadow-sm btn-hover btn-primary-solid"
-            >
+          }
+        </div>
+      
+        <div class="d-flex align-items-center justify-content-center gap-2 flex-shrink-0">
+          @if(showButtonEdit(task)) {
+            <button mat-mini-fab (click)="onCardClick(task)" class="shadow-sm btn-hover btn-primary-solid">
               <mat-icon>edit</mat-icon>
             </button>
-            } @if( showButtonDelete(task) ) {
-            <button
-              mat-mini-fab
-              type="button"
-              (click)="onDeleteClick(task)"
-              class="shadow-sm btn-hover btn-warn-solid"
-            >
+          } 
+          
+          @if(showButtonDelete(task)) {
+            <button mat-mini-fab type="button" (click)="onDeleteClick(task)" class="shadow-sm btn-hover btn-warn-solid">
               <mat-icon>delete</mat-icon>
             </button>
-            }
-          </div>
-        </mat-card-content>
+          }
+        </div>
+      
+      </mat-card-content>
       </mat-card>
       }
     </div>

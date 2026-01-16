@@ -1,5 +1,5 @@
 .pending-col {
-  background-color: rgba(244, 67, 54, 0.15);
+  background-color: rgba(255, 152, 0, 0.12);
 }
 
 .progress-col {
@@ -7,7 +7,30 @@
 }
 
 .completed-col {
-  background-color: rgba(76, 175, 80, 0.15);
+  background-color: rgba(139, 195, 74, 0.15);
+}
+
+.priority-container {
+  padding-bottom: 10px;   // Ajusta esto para subirla o bajarla un poco
+  right: 0;    // Pegada al borde derecho del bloque de texto
+  z-index: 1;
+}
+
+.pill {
+  display: inline-block;
+  padding: 3px 6px;
+  border-radius: 20px;
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  width: 5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+// Espacio de seguridad para el título
+.pe-5 {
+  padding-right: 4.5rem !important;
 }
 
 .task-card {

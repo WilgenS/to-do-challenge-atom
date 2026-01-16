@@ -98,7 +98,6 @@ export class TaskListComponent implements OnInit {
   openTaskDialog(task?: TaskWithAction) {
     // 1. Interceptar la eliminación antes de abrir el diálogo
     if (task?.action === 'delete') {
-      
       // Opcional: Agregar un diálogo de confirmación aquí (window.confirm o MatDialog)
       if (confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
          this.deleteTaskImplementation(task.id);
