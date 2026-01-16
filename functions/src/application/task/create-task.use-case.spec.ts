@@ -1,6 +1,6 @@
-import {CreateTaskUseCase} from "./create-task.use-case";
-import {TaskRepository} from "../../domain/repositories/task.repository";
-import {TaskStatus} from "../../domain/models/task-status.enum";
+import { CreateTaskUseCase } from "./create-task.use-case";
+import { TaskRepository } from "../../domain/repositories/task.repository";
+import { TaskStatus } from "../../domain/models/task-status.enum";
 
 const mockTaskRepository = {
   create: jest.fn(),
@@ -20,7 +20,13 @@ describe("CreateTaskUseCase", () => {
     const title = "New Task";
     const desc = "Description";
 
-    await useCase.execute(supervisorId, assignedToId, title, desc);
+    await useCase.execute({
+      supervisorId,
+      assignedToId,
+      title,
+      description: desc,
+      status: TaskStatus.PENDING
+    } as any);
 
     expect(mockTaskRepository.create).toHaveBeenCalledWith(expect.objectContaining({
       supervisorId: "sup-1",
@@ -33,7 +39,13 @@ describe("CreateTaskUseCase", () => {
     const supervisorId = "sup-1";
     const assignedToId = "user-2";
 
-    await useCase.execute(supervisorId, assignedToId, "T", "D");
+    await useCase.execute({
+      supervisorId,
+      assignedToId,
+      title: "T",
+      description: "D",
+      status: TaskStatus.PENDING
+    } as any);
 
     expect(mockTaskRepository.create).toHaveBeenCalledWith(expect.objectContaining({
       supervisorId: "sup-1",

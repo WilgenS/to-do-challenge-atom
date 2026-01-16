@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MainLayoutComponent } from './main-layout.component';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { provideRouter } from '@angular/router';
 
