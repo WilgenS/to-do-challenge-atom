@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { Task, TaskWithAction } from '../../../../core/models/task.model';
+import { priorityColors, Task, TaskWithAction } from '../../../../core/models/task.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -44,6 +44,8 @@ export class TaskBoardComponent {
     return this.tasks.filter(t => t.status === status);
   }
 
+  colors = priorityColors;
+
   getShort(text: string): string {
     const max = 35;
     return text.length > max ? text.substring(0, max) + '...' : text;
@@ -75,5 +77,7 @@ export class TaskBoardComponent {
       ...task,
       action: 'delete'
     });
+
   }
+  
 }

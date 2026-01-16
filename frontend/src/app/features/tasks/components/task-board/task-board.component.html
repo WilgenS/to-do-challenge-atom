@@ -18,6 +18,19 @@
           class="px-3 py-2.5 d-flex flex-lg-row flex-column justify-content-between align-items-center gap-3"
         >
           <div class="flex-grow-1 min-w-0">
+            <div
+            class="d-flex align-items-center justify-content-center gap-2 flex-shrink-0"
+            
+            >
+              @if(task.priority && task){
+                <p
+                class="fw-bold"
+                [ngStyle]="{ color: colors[task.priority] }"
+                  >
+                    {{task.priority}}
+              </p>
+            }
+            </div>
             <p
               class="fw-semibold mb-1"
               [ngClass]="{
@@ -27,13 +40,21 @@
               {{ task.title }}
             </p>
 
-            <p class="">
+            <p>
               {{
                 task.status === "completed"
                   ? (task.createdAt | date : "shortDate")
                   : task.description
               }}
             </p>
+
+            @if(task.supervisorId !== task.assignedToId && task.assignedUser) {
+            <p>
+              <strong>Asignada a: </strong>
+              {{ task.assignedUser.name }} {{ task.assignedUser.lastname }}
+            </p>
+            }
+
           </div>
 
           <div
@@ -50,6 +71,7 @@
             } @if( showButtonDelete(task) ) {
             <button
               mat-mini-fab
+              type="button"
               (click)="onDeleteClick(task)"
               class="shadow-sm btn-hover btn-warn-solid"
             >

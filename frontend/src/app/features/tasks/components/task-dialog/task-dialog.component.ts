@@ -9,7 +9,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon'; // Opcional para decorar
 import { UserService } from '../../../../core/services/user.service';
-import { Task } from '../../../../core/models/task.model';
+import { Priorities, Task } from '../../../../core/models/task.model';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -46,6 +46,12 @@ export class TaskDialogComponent {
 
   public users = toSignal(this.userService.getUsers(), { initialValue: [] });
 
+  public priorities = signal([
+    { value: Priorities.Low, label: 'Baja' },
+    { value: Priorities.Medium, label: 'Media' },
+    { value: Priorities.High, label: 'Alta' }
+  ]);
+ 
   public supervisorInfo = computed(() => {
     const supervisorId = this.data.task?.supervisorId;
     if (!supervisorId) return null;
@@ -63,7 +69,8 @@ export class TaskDialogComponent {
     description: [this.data.task?.description || '', Validators.required],
     status: [this.data.task?.status || 'pending'],
     asSupervisor: [false],
-    assignedToId: [this.data.task?.assignedToId || this.data.currentUserId, Validators.required]
+    assignedToId: [this.data.task?.assignedToId || this.data.currentUserId, Validators.required],
+    priority: [this.data.task?.priority ?? Priorities.Medium, Validators.required]
   });
 
   constructor() {

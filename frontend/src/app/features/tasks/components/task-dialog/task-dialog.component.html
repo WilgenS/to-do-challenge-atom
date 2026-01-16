@@ -22,12 +22,23 @@
       <textarea matInput formControlName="description" rows="3"></textarea>
     </mat-form-field>
 
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nivel de prioridad</mat-label>
+      <mat-select formControlName="priority">
+        @for(priority of priorities(); track priority.value){
+          <mat-option [value]="priority.value">
+            {{ priority.label }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
     @if (!isEditMode) {
     <div
       class="d-flex align-items-center justify-content-between bg-light p-3 rounded mb-2"
     >
     
-      <span>¿Asignar a otra persona?</span>
+      <span>¿Asignar a otra(s) persona(s)?</span>
       <button
       id="assignmentUser"
       [disabled]="isDisabled"
@@ -47,8 +58,8 @@
       appearance="outline"
       class="full-width animate__animated animate__fadeIn"
     >
-      <mat-label>Seleccionar Responsable</mat-label>
-      <mat-select formControlName="assignedToId">
+      <mat-label>Seleccionar Responsable(s)</mat-label>
+      <mat-select formControlName="assignedToId" multiple>
         @for (user of users(); track user.uid) {
         <mat-option [value]="user.uid">
           {{ user.name }} {{ user.lastname }}

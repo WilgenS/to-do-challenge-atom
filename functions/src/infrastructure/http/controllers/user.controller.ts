@@ -8,6 +8,7 @@ import {GetAllUserUseCase} from "../../../application/user/get-all-user.use-case
 
 import {UserMessages} from "../../../domain/constants/user-messages.constant";
 import {HttpStatus} from "../../../domain/constants/http-status.constant";
+import { GetAssignableUsersUseCase } from "../../../application/user/get-assignable-user.use-case";
 
 const userRepository = new FirestoreUserRepository();
 const checkUserUseCase = new CheckUserUseCase(userRepository);
@@ -15,6 +16,7 @@ const createUserUseCase = new CreateUserUseCase(userRepository);
 const profileUserUseCase = new ProfileUserUseCase(userRepository);
 const searchUserUseCase = new SearchUserUseCase(userRepository);
 const getAllUserUseCase = new GetAllUserUseCase(userRepository);
+const getAssignableUsersUseCase = new GetAssignableUsersUseCase(userRepository);
 
 export const checkUser = async (req: Request, res: Response) => {
   try {
@@ -106,6 +108,22 @@ export const searchUser = async (req: Request, res: Response) => {
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await getAllUserUseCase.execute();
+    res.status(HttpStatus.OK).json(users);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : UserMessages.ERROR.GET_ALL_FAILED;
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({message});
+  }
+};
+
+export const getAssignableUsers = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.uid;
+    if (!userId) {
+      res.status(HttpStatus.UNAUTHORIZED).json({message: UserMessages.VALIDATION.AUTH_REQUIRED});
+      return;
+    }
+
+    const users = await getAssignableUsersUseCase.execute(userId);
     res.status(HttpStatus.OK).json(users);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : UserMessages.ERROR.GET_ALL_FAILED;

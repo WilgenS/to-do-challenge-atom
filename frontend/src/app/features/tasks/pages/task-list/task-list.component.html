@@ -42,13 +42,13 @@
 
   <section class="animate__animated animate__fadeIn animate__delay-1s">
     <h4 class="d-flex align-items-center gap-2 mb-3 text-secondary">
-      <mat-icon>visibility</mat-icon> Tareas Asignadas
+      <mat-icon>checklist</mat-icon> Tareas Asignadas
     </h4>
     <p class="text-muted small mb-3">
       Tareas que asignaste a otros miembros del equipo.
     </p>
 
-    <app-task-board [tasks]="supervisedTasks()" [isReadOnly]="true">
+    <app-task-board [tasks]="supervisedTasks()" [isReadOnly]="true" (taskClick)="openTaskDialog($event)">
     </app-task-board>
   </section>
 </div>

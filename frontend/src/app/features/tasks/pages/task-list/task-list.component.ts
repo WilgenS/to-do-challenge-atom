@@ -96,6 +96,17 @@ export class TaskListComponent implements OnInit {
   }
 
   openTaskDialog(task?: TaskWithAction) {
+    // 1. Interceptar la eliminación antes de abrir el diálogo
+    if (task?.action === 'delete') {
+      
+      // Opcional: Agregar un diálogo de confirmación aquí (window.confirm o MatDialog)
+      if (confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
+         this.deleteTaskImplementation(task.id);
+      }
+      return; // Detenemos la ejecución para que no abra el formulario de edición
+    }
+
+    // 2. Flujo normal para Crear o Editar
     const dialogRef = this.dialog.open(TaskDialogComponent, {
       width: '600px',
       disableClose: true,
@@ -110,12 +121,9 @@ export class TaskListComponent implements OnInit {
 
       this.loading.set(true);
 
+      // Lógica de Creación
       if (!task?.action) {
-        const newTaskPayload = {
-          ...result,
-          supervisorId: this.currentUserId()
-        };
-
+        const newTaskPayload = { ...result, supervisorId: this.currentUserId() };
         this.taskService.createTask(newTaskPayload).subscribe({
           next: () => {
             this.loadTasks();
@@ -128,6 +136,7 @@ export class TaskListComponent implements OnInit {
         });
       }
 
+      // Lógica de Edición
       if (task?.action === 'edit') {
         this.taskService.updateTask(task.id, result).subscribe({
           next: () => {
@@ -139,23 +148,24 @@ export class TaskListComponent implements OnInit {
             this.loading.set(false);
           }
         });
-
-      }
-
-      if (task?.action === 'delete') {
-        this.taskService.deleteTask(task.id).subscribe({
-          next: () => {
-            this.loadTasks();
-            this.showSuccess('Tarea eliminada correctamente');
-          },
-          error: () => {
-            this.showError('Error eliminando la tarea');
-            this.loading.set(false);
-          }
-        });
       }
     });
-  }
+}
+
+// Helper method para limpiar el código
+private deleteTaskImplementation(taskId: string) {
+    this.loading.set(true);
+    this.taskService.deleteTask(taskId).subscribe({
+        next: () => {
+          this.loadTasks();
+          this.showSuccess('Tarea eliminada correctamente');
+        },
+        error: () => {
+          this.showError('Error eliminando la tarea');
+          this.loading.set(false);
+        }
+    });
+}
 
   // Helpers para notificaciones
   private showSuccess(msg: string) {

@@ -20,7 +20,7 @@ export class UserService {
       uid: unknown;
       name: string; lastname: string; email: string
    }>> {
-      return this.http.get<Array<{ uid: string; name: string; lastname: string; email: string }>>(`${this.apiUrl}`, {
+      return this.http.get<Array<{ uid: string; name: string; lastname: string; email: string }>>(`${this.apiUrl}/assignable`, {
          params: term ? { term } : {}
       });
    }
