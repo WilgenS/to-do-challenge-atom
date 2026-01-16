@@ -15,6 +15,11 @@ describe('TaskBoardComponent', () => {
       status: 'pending',
       supervisorId: 'sup-1',
       assignedToId: 'user-1',
+      assignedUser: {
+        name: 'John',
+        lastname: 'Doe',
+        email: 'john.doe@example.com'
+      },
       action: 'edit',
       createdAt: new Date()
     },
@@ -25,6 +30,11 @@ describe('TaskBoardComponent', () => {
       status: 'in_progress',
       supervisorId: 'sup-1',
       assignedToId: 'user-1',
+      assignedUser: {
+        name: 'Jane',
+        lastname: 'Smith',
+        email: 'jane.smith@example.com'
+      },
       action: 'edit',
       createdAt: new Date()
     },
@@ -35,6 +45,11 @@ describe('TaskBoardComponent', () => {
       status: 'completed',
       supervisorId: 'sup-1',
       assignedToId: 'user-1',
+      assignedUser: {
+        name: 'Bob',
+        lastname: 'Johnson',
+        email: 'bob.johnson@example.com'
+      },
       action: 'edit',
       createdAt: new Date()
     }
